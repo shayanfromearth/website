@@ -1,0 +1,15 @@
+---
+title: "Shayan Kaveh"
+site: distill::distill_website
+image: "shayan.jpg"
+links:
+  - label: <a href = "https://www.linkedin.com/in/shayan-kaveh/" target = "_blank">LinkedIn</a> 
+  - label: <a href = "https://github.com/shayanfromearth" target = "_blank">GitHub</a>
+  - label: <a href = "mailto:skaveh@bren.ucsb.edu" target = "_blank">Email</a>
+output:
+  postcards::trestles
+---
+ 
+I am a Master's Student in the Bren School of Environmental Science and Management at UC Santa Barbara, 
+studying the economics and politics of the environment with a focus in strategic communications. 
+I aspire to support movements towards social justice through community-based research and policy advocacy. 

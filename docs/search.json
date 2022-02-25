@@ -1,0 +1,27 @@
+{
+  "articles": [
+    {
+      "path": "about.html",
+      "title": "About this site",
+      "description": "Some additional details about the website",
+      "author": [],
+      "contents": "\n\n\n\n",
+      "last_modified": "2022-02-25T13:37:47-08:00"
+    },
+    {
+      "path": "blog.html",
+      "title": "Blog",
+      "author": [],
+      "contents": "\n\n\n\n",
+      "last_modified": "2022-02-25T13:37:48-08:00"
+    },
+    {
+      "path": "index.html",
+      "title": "Shayan Kaveh",
+      "author": [],
+      "contents": "\n\n          \n          \n          logo.png\n          \n          \n          Home\n          About\n          Blog\n          Projects\n          ☰\n          \n          \n      \n        \n          \n            \n              \n            \n              Shayan Kaveh\n            \n            \n              \n                \n                    \n                      \n                        LinkedIn\n                      \n                    \n                  \n                                    \n                    \n                      \n                        GitHub\n                      \n                    \n                  \n                                    \n                    \n                      \n                        Email\n                      \n                    \n                  \n                                  \n            \n          \n        \n        \n        \n          \n            I am a Master’s Student in the Bren School of Environmental Science and Management at UC Santa Barbara, studying the economics and politics of the environment with a focus in strategic communications. I aspire to support movements towards social justice through community-based research and policy advocacy.\n          \n        \n      \n    \n\n    \n      \n        \n          \n            \n              \n            \n              Shayan Kaveh\n            \n            \n              \n                \n                                    \n                    \n                      LinkedIn\n                    \n                  \n                                    \n                    \n                      GitHub\n                    \n                  \n                                    \n                    \n                      Email\n                    \n                  \n                                  \n              \n            \n            \n              I am a Master’s Student in the Bren School of Environmental Science and Management at UC Santa Barbara, studying the economics and politics of the environment with a focus in strategic communications. I aspire to support movements towards social justice through community-based research and policy advocacy.\n            \n        \n      \n    \n\n    \n    \n    ",
+      "last_modified": "2022-02-25T13:37:48-08:00"
+    }
+  ],
+  "collections": ["posts/posts.json"]
+}

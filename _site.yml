@@ -1,0 +1,17 @@
+name: "."
+title: "logo.png"
+description: |
+  SK
+theme: postcards.css
+output_dir: "docs"
+navbar:
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+    - text: "Blog"
+      href: blog.html
+    - text: "Projects"
+      href: projects.html
+output: distill::distill_article
