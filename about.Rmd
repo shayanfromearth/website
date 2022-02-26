@@ -1,10 +1,8 @@
 ---
-title: "About this site"
-description: |
-  Some additional details about the website
+title: "About me"
 ---
+<img src="sunset.jpg" />
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-```
-
+I am a Master's Student in the Bren School of Environmental Science and Management at UC Santa Barbara, 
+studying the economics and politics of the environment with a focus in strategic communications. 
+I aspire to support social justice movements through community-based research and policy advocacy. 

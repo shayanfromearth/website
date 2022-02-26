@@ -1,19 +1,15 @@
-name: "."
-title: ""
-description: |
-  SK
+name: "shayan kaveh"
+title: "SK"
 theme: postcards.css
 output_dir: "docs"
 navbar:
-  logo: 
-    image: "logo.png"
   right:
     - text: "Home"
       href: index.html
     - text: "About"
       href: about.html
-    - text: "Blog"
-      href: blog.html
     - text: "Projects"
-      href: projects.html
+      href: blog.html
+    - text: "CV"
+      href: "Shayan_Kaveh_Bren_Resume.pdf"
 output: distill::distill_article

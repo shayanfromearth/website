@@ -10,17 +10,18 @@ output:
   postcards::solana
 ---
 
-<br> 
-
-## Bio 
+## Hi! 
 
 I am a Master's Student in the Bren School of Environmental Science and Management at UC Santa Barbara, 
 studying the economics and politics of the environment with a focus in strategic communications. 
-I aspire to support movements towards social justice through community-based research and policy advocacy. 
+I aspire to support social justice movements through community-based research and policy advocacy. 
+
 
 ## Education
-**The Bren School of Environmental Science & Management** | Santa Barbara, CA
+**The Bren School of Environmental Science & Management** | Santa Barbara, CA 
+<br>
 Master’s of Environmental Science & Management | 2021 - Expected 2023
 
-**UC Davis** | Davis, CA
+**University of California, Davis** | Davis, CA 
+<br>
 B.S. Environmental Toxicology, minor Geographic Information Systems | 2016 - 2020

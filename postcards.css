@@ -1,17 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Dancing+Script&family=Montserrat&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono');
 
 html {
   /*-- font rules --*/
-  --heading-font: "Montserrat", sans-serif;
-  --title-font: "Montserrat", sans-serif;
+  --heading-font: "Roboto", sans-serif;
+  --title-font: "Robotto", sans-serif;
   --mono-font: "DM Mono", monospace;
-  --body-font: "Roboto", sans-serif;
-  --navbar-font: "Montserrat", sans-serif;
+  --body-font: "Montserrat", sans-serif;
+  --navbar-font: "Roboto", sans-serif;
   /*-- Main font sizes --*/
-  --title-size:      18px;
-  --body-size:       1.3rem;
+  --title-size:      50px;
+  --body-size:       1.06rem;
   --code-size:       14px;
   --aside-size:      12px;
   --fig-cap-size:    13px;
@@ -75,8 +75,8 @@ d-appendix {
   --title-size:       18px;
   --text-color:       white; /*edited*/
   --text-size:        20px;
-  --hover-color:      #dd424c; /*edited*/
-  --bkgd-color:       #D48166; /*edited*/
+  --hover-color:      #4D724D; /*edited*/
+  --bkgd-color:       #8DB48E; /*edited*/
 }
 
 .distill-site-footer {
@@ -90,5 +90,5 @@ d-appendix {
 /* Add any additional CSS rules below                      */
 
 body {
-  background-color: #E6E2DD;
+  background-color: #F5F5F5;
 }
