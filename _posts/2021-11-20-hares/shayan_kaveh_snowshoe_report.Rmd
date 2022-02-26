@@ -1,9 +1,11 @@
 ---
-title: "Snowshoe Hares Exploratory Report - Bonanza Creek Experimental Project"
-author: "By: Shayan Kaveh"
-date: "Nov. 10, 2021"
+title: "Snowshoe Hares Exploratory Report"
+description: Visualizing Juvenile Snowshoe Hare Statistics
+author: 
+  - name: Shayan Kaveh
+date: 2021-11-10
 output: 
-  html_document:
+  distill::distill_article:
     theme: yeti
     toc: yes
     toc_depth: 2
