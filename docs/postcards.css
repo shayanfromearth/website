@@ -75,8 +75,8 @@ d-appendix {
   --title-size:       18px;
   --text-color:       white; /*edited*/
   --text-size:        20px;
-  --hover-color:      #4D724D; /*edited*/
-  --bkgd-color:       #8DB48E; /*edited*/
+  --hover-color:      #A86751; /*edited*/
+  --bkgd-color:       #d38166; /*edited*/
 }
 
 .distill-site-footer {
@@ -90,5 +90,5 @@ d-appendix {
 /* Add any additional CSS rules below                      */
 
 body {
-  background-color: #F5F5F5;
+  background-color: #e5e2dc;
 }
