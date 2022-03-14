@@ -1,5 +1,5 @@
 ---
-title: 'Task 1: Spatial Data Visualization'
+title: 'Oil Spill Spatial Data Visualization'
 description: Spatial Visualization of California Oil Spills in 2008
 author: 
   - name: Shayan Kaveh
