@@ -10,10 +10,9 @@ output:
   postcards::solana
 ---
 
-## Hi! 
+## About 
 
-I am a Master's Student in the Bren School of Environmental Science and Management at UC Santa Barbara, 
-studying the economics and politics of the environment with a focus in strategic communications. 
+I am a multimedia storyteller and environmental scientist working to bring attention to environmental and social conflicts. Currently, I am a master's student at the Bren School of Environmental Science and Management at UC Santa Barbara, studying  economics and politics of the environment with a focus in strategic communications. 
 I aspire to support social justice movements through community-based research and policy advocacy. 
 
 
