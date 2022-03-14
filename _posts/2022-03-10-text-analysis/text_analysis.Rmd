@@ -1,0 +1,299 @@
+---
+title: "Album sentiment analysis"
+description: Lyrics Sentiment Analysis - the Albums of our Youth
+author: 
+  - name: Shayan Kaveh
+date: 2022-03-13
+output: 
+  distill::distill_article:
+    theme: yeti
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+    collapsed: yes
+    smooth_scroll: yes
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = T, warning = F, message = F}
+knitr::opts_chunk$set(echo = T, warning = F, message = F)
+library(tidyverse)
+library(tidytext)
+library(textdata)
+library(pdftools)
+library(ggwordcloud)
+library(rvest)
+library(purrr)
+library(cowplot)
+library(patchwork)
+library(knitr)
+library(here)
+```
+
+## Introduction
+
+Growing up music had a major impact on my life. I've seen the songs I listen to influence my mood and decisions for good or bad. My relationship with music bloomed as I entered my teen years and began to find my own musical identity, diverging from the songs my mom raised me on. But they say the apple does not fall far from the tree! For this text analysis, I will pull lyrics from the album I listened to most as a young teen and the album my mom listened to most at the same age, Lungs by Florence and the Machine and War by U2. The two albums could not be any more different on the surface, but the artists come from similar cultures and in their own ways redefined music for our generations. I would like to see whether there is similarities in sentiments between the music or distinctions that make them stand out as such great albums.
+
+```{r image, out.width = "45%", fig.show = "hold", fig.align = "default"}
+# image
+include_graphics(here("_posts", "2022-03-10-text-analysis", "data", "florence.jpg"))
+include_graphics(here("_posts", "2022-03-10-text-analysis", "data", "war.jpg"))
+```
+
+### Data Scraping and Wrangling
+
+```{r songs}
+load(here("_posts", "2022-03-10-text-analysis", "data", "florence_u2.RData"))
+```
+
+
+```{r}
+#Make a function for purr
+
+get_lyrics<-function(song,artist,album,year){
+    
+ #Create url base
+  base1<-c("https://songlyrics.com/")
+
+  base2<-c("-lyrics")
+
+#Clean the artist name and song name to match the url
+  artist_url <- str_replace_all(artist, pattern = "(?!\\!)[[:punct:]]", replacement = " ") %>% 
+    str_replace_all(pattern = " ", replacement = "-") %>%
+    str_to_lower() %>% 
+    str_squish()
+
+  song_url <- str_remove_all(song,pattern = "(?![&'])[[:punct:]]") %>%   #The (?!\\[!']) tells R to ignore all punct except & and '
+    str_replace_all(pattern="'",replacement = "-") %>%   #This is a little thing I noticed specific to the website in how they handle apostrophes
+    str_replace_all(pattern = "&", replacement = "-") %>% 
+    str_replace_all(pattern = " ",replacement = "-") %>%
+    str_to_lower() %>% 
+    str_squish() 
+  
+  url <- paste(base1,artist_url,"/",song_url,base2,sep = "")
+  
+  #Test to see if the website actually has the song data. Try catch lets me define errors that purr will put out
+  out<-tryCatch({
+    read_html(url)
+  },
+  
+  error=function(cond){
+
+    return(NA)
+  }
+  
+  )
+ 
+  if(is.na(out)){
+    
+  stop(paste("Songlyrics.com doesn't have data on",artist,song,sep=" "))}  
+
+  
+  #Get the data from the website and clean it up
+
+  extract<-read_html(url) %>% 
+    html_nodes("#songLyricsDiv") %>% 
+    html_text() %>% 
+    str_replace_all("\n"," ") %>% 
+    str_remove_all(pattern = "[[:punct:]]") %>% 
+    str_to_lower() %>% 
+    str_split(" ") %>% 
+    as.data.frame() %>% 
+    mutate(song = song, artist = artist, album = album, year = year) #Add other names
+  colnames(extract)[1] <- "word"  #Use word here so it matches with stop_words
+  
+  extract_clean <- extract %>% 
+    anti_join(stop_words,by="word")
+  
+
+  
+  return(extract_clean)
+}
+``` 
+
+```{r run purrr}
+### Run the map to get the song lyrics then clean up the dataframe
+safe_get_ly <- safely(get_lyrics)
+
+
+song_lyrics <- pmap(songs,safe_get_ly) %>% transpose()
+  
+any_errors_lyrics <- compact(song_lyrics$error)
+  
+  
+#Extract the data from the lists  
+lyrics <- compact(song_lyrics$result)  %>% 
+  as_tibble_col(column_name = "word") %>% 
+  unnest()
+  
+  ## From here we could row bind this to a "master" lyrics dataframe
+```
+
+## Lyrics Analysis
+
+```{r}
+cloud_lungs<-lyrics %>% 
+  filter(album=="Lungs") %>% 
+  count(word) %>% 
+  arrange(-n) %>% 
+  slice(1:100)
+
+cloud<-ggplot(data=cloud_lungs,aes(label=word))+
+  geom_text_wordcloud(aes(color=n,size=n),shape="diamond")+
+  scale_size_area(max_size = 5)+
+  scale_color_gradientn(colors = c("darkgreen","blue","purple"))+
+  theme_void()
+
+cloud_police <- lyrics %>% 
+  filter(album == "War") %>% 
+  count(word) %>% 
+  arrange(-n) %>% 
+  slice(1:100)
+
+cloud_p <- ggplot(data = cloud_police,
+                  aes(label = word)) +
+  geom_text_wordcloud(aes(color = n, size = n),
+                      shape = "diamond") +
+  scale_size_area(max_size = 5) +
+  scale_color_gradientn(colors = c("darkgreen","blue","purple"))+
+  theme_void()
+
+cloud_war<-lyrics %>% 
+  filter(album=="War") %>% 
+  count(word) %>% 
+  arrange(-n) %>% 
+  slice(1:100)
+
+cloud2<-ggplot(data=cloud_war,aes(label=word))+
+  geom_text_wordcloud(aes(color=n,size=n),shape="diamond")+
+  scale_size_area(max_size = 5)+
+  scale_color_gradientn(colors = c("red","orange","gold"))+
+  theme_void()
+
+plot_grid(cloud,cloud2) + plot_annotation("Word clouds for Lungs and War", caption = "Figure 1. 100 most frequent words in the albums Lungs (Florence & The Machine) and War (U2)")
+```
+
+---
+
+## Sentiment Analysis {.tabset}
+
+```{r}
+florence_lyrics <- lyrics %>% 
+  filter(artist == "Florence & The Machine")
+
+u2_lyrics <- lyrics %>% 
+  filter(artist == "U2")
+```
+
+
+```{r florence sentiment}
+florence_afinn <- florence_lyrics %>% 
+  inner_join(get_sentiments('afinn'),
+             by = 'word')
+
+florence_afinn_means <- florence_afinn %>% 
+  group_by(song) %>% 
+  summarize(mean_affin = mean(value))
+
+florence_nrc <- florence_lyrics %>% 
+  filter(song %in% c("Cosmic Love", "Dog Days Are Over", "You've Got The Love", "Howl")) %>% 
+  inner_join(get_sentiments('nrc')) 
+
+florence_nrc_counts <- florence_nrc %>% 
+  count(song, sentiment) 
+```
+
+```{r u2 sentiment}
+u2_afinn <- u2_lyrics %>% 
+  inner_join(get_sentiments('afinn'),
+             by = 'word')
+
+u2_afinn_means <- u2_afinn %>% 
+  group_by(song) %>% 
+  summarize(mean_affin = mean(value))
+
+# for nrc sentiment analysis, I only want to compare 4 best songs from each album
+
+u2_nrc <- u2_lyrics %>% 
+  filter(song %in% c("Sunday Bloody Sunday", "New Year's Day", "Two Hearts Beat As One", "'40'")) %>% 
+  inner_join(get_sentiments('nrc')) 
+
+u2_nrc_counts <- u2_nrc %>% 
+  count(song, sentiment) 
+```
+
+### Tracklist Afinn Means 
+
+```{r}
+
+ggplot(data = florence_afinn_means,
+       aes(x = fct_rev(factor(song)),
+           y = mean_affin)) +
+  geom_col(fill = "darkseagreen") +
+  coord_flip() +
+  labs(y = "Mean Afinn Value",
+       x = "Track Title",
+       title = "Afinn Value for Lungs by Florence & The Machine",
+       caption = "Figure 2. Average Afinn value - measurement of song positivity/negativity - for each track on Lungs (2009).") +
+  theme_void()
+```
+
+```{r}
+
+ggplot(data = u2_afinn_means,
+       aes(x = fct_rev(factor(song)),
+           y = mean_affin)) +
+  geom_col(fill = "indianred") +
+  coord_flip() +
+  labs(y = "Mean Afinn Value",
+       x = "Track Title",
+       title = "Afinn Value for War by U2",
+       caption = "Figure 3. Average Afinn value - measurement of song positivity/negativity - for each track on War (1983).") +
+  theme_void()
+```
+
+---
+
+### Tracklist NRC Sentiment Analysis
+
+
+```{r, fig.width = 9, fig.height = 9}
+
+ggplot(data = florence_nrc_counts,
+       aes(x = sentiment, 
+           y = n)) +
+  geom_col(fill = 'darkseagreen') +
+  facet_wrap( ~song, scales = "fixed") +
+  coord_flip() +
+  labs(y = "Amount of NRC Words",
+       x = "NRC Sentiment",
+       title = "NRC Sentiment Analysis of Lungs",
+       caption = "Figure 4. NRC sentiment analysis of the lyrics in the 3 most popular tracks from Lungs by Florence & The Machine.") +
+  theme_void()
+```
+
+```{r, fig.width = 9, fig.height = 9}
+ggplot(data = u2_nrc_counts,
+       aes(x = sentiment, 
+           y = n)) +
+  geom_col(fill = 'indianred') +
+  facet_wrap( ~song, scales = "fixed") +
+  coord_flip() +
+  labs(y = "Amount of NRC Words",
+       x = "NRC Sentiment",
+       title = "NRC Sentiment Analysis of War",
+       caption = "Figure 5. NRC sentiment analysis of the lyrics in the most 3 popular tracks from War by U2.") +
+  theme_void()
+```
+
+---
+
+## Conclusion
+
+Released 26 years apart from one another, Lungs and War share one central theme: love. Both albums are ripe with emotion, written with motifs of mortality and the heaviness of life. The Afinn analysis shows both albums span a spectrum of emotion, represented by songs assumed to be very positive and very negative. The NRC analysis further shows that both artists are unafraid to write about the full spectrum of emotion. 
+
+This analysis cannot truly compare two albums of so much significance, but it shows two albums full of emotional lyrics that speak to teenage angst in unique and creative ways. 
+
+**Data Source:** songlyrics.com

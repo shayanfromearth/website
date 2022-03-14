@@ -1,0 +1,97 @@
+---
+title: 'Task 1: Spatial Data Visualization'
+description: Spatial Visualization of California Oil Spills in 2008
+author: 
+  - name: Shayan Kaveh
+date: 2022-03-03
+output: 
+  distill::distill_article:
+    theme: yeti
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+    collapsed: yes
+    smooth_scroll: yes
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = T, message = F, warning = F}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+library(tidyverse)
+library(here)
+library(broom)
+library(sf)
+library(tmap)
+library(plotly)
+```
+
+## Overview
+
+This analysis visualizes data from the Oil Spill Prevention and Response (OSPR) Incident Tracking database, collected by OSPR Field Response team members. The analysis looks at overall oil spills and a closer look at inland oil spills in 2008. 
+
+**Data Source:** Lampinen, Mark (2009). Oil Spill Incident Tracking [ds394]. California Department of Fish and Game, Office of Spill Prevention and Response. https://map.dfg.ca.gov/metadata/ds0394.html?5.108.39
+
+## Analysis
+
+```{r data}
+ca_counties_sf <- read_sf(here("_posts", "2022-03-05-spatial-data", "data", "ca_counties", "CA_Counties_TIGER2016.shp")) %>% 
+  janitor::clean_names() %>% 
+  select(county_name = name)
+
+# st_crs(ca_counties_sf) ### WGS84, epsg: 3857
+
+ca_oil_sf <- read_sf(here("_posts", "2022-03-05-spatial-data", "data", "ds394", "ds394.shp")) %>% 
+  janitor::clean_names()
+
+# st_crs(ca_oil_sf) ### NAD83, epsg: 3310
+
+oil_3857_sf <- st_transform(ca_oil_sf, st_crs(ca_counties_sf))
+
+# st_crs(oil_3857_sf) 
+#wooh it's in wgs 84 now
+```
+
+### All oil spills (2008)
+```{r tmap, fig.align = "center"}
+tmap_mode(mode = "view")
+
+tm_shape(ca_counties_sf) +
+  tm_fill() +
+  tm_basemap(c(StreetMap = "OpenStreetMap",
+               TopoMap = "OpenTopoMap")) +
+  tm_borders() +
+  tm_polygons(alpha = 0) + # remove county fill
+  tm_shape(ca_oil_sf) +
+  tm_dots(col = "indianred")
+```
+Figure 1. Interactive California map representing all oil spills in 2008
+
+<br> 
+
+### Oil spills by county
+```{r spatial data}
+oil_ca_sf <- ca_counties_sf %>% 
+  st_join(oil_3857_sf)
+```
+
+```{r}
+oil_counts_sf <- oil_ca_sf %>% 
+  group_by(county_name) %>% 
+  filter(inlandmari %in% "Inland") %>% 
+  summarize(sum_spills = sum(!is.na(oesnumber))) # summarize total oil spills by county
+
+# head(oil_counts_sf)
+```
+
+```{r, fig.align = "center", fig.cap = "Figure 2. Total number of inland oil spills summarized by county"}
+chloropleth <- ggplot(data = oil_counts_sf) +
+  geom_sf(aes(fill = sum_spills), color = "gray", size = 0.5) +
+  scale_fill_gradientn(colors = c("ivory", "lightcoral", "indianred4")) +
+  labs(fill = "Number of inland oil spills by county") +
+  theme_void() 
+
+ggplotly(chloropleth, tooltip = c("County", "sum_spills"))
+```
+
